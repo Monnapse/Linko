@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/Linko/__init__.py
+src/linko/__init__.py
+src/linko.egg-info/PKG-INFO
+src/linko.egg-info/SOURCES.txt
+src/linko.egg-info/dependency_links.txt
+src/linko.egg-info/top_level.txt
