@@ -16,7 +16,7 @@ class Linko:
        """
        self.Methods = Methods
         
-    def add_method(self, Method: str or types.FunctionType, Value: any or None = None) -> None:
+    def add_method(self, Method: str or types.FunctionType, Value: any or callable or None = None) -> None:
         """
         adds method to the Methods set
         """
@@ -31,12 +31,13 @@ class Linko:
         for match in matches:
             stripped = match.strip()
 
-            if re.match(function, match):
-                print(f"'{match}' resembles a function call.")
-            else:
-                print(f"'{match}' does not resemble a function call.")
-                value = self.Methods[stripped]
-                if value:
-                    content = content.replace(f"[[!{match}!]]", value, 1)
+            #if re.match(function, match):
+                #function
+            #else:
+            value = self.Methods[stripped]
+            if callable(value):
+                content = content.replace(f"[[!{match}!]]", str(value()), 1)
+            elif value:
+                content = content.replace(f"[[!{match}!]]", value, 1)
 
         return content
