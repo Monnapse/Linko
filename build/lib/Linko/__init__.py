@@ -6,7 +6,7 @@ style = r'\[\[!(.*?)!\]\]'
 function = r'^\w+\(.*\)$'
     
 class Linko:     
-    def __init__(self, Methods: set = {}):
+    def __init__(self, Layers: set = {}, Methods: set = {}):
        """
        Connect Python and HTML to pass varius Methods.
 
@@ -14,6 +14,7 @@ class Linko:
        [[! valueHere !]]
        [[! valueHere !]]
        """
+       self.Layers = Layers
        self.Methods = Methods
         
     def add_method(self, Method: str or types.FunctionType, Value: any or callable or None = None) -> None:
@@ -34,10 +35,14 @@ class Linko:
             #if re.match(function, match):
                 #function
             #else:
-            value = self.Methods[stripped]
-            if callable(value):
-                content = content.replace(f"[[!{match}!]]", str(value()), 1)
-            elif value:
-                content = content.replace(f"[[!{match}!]]", value, 1)
+            try:
+                value = self.Methods[stripped]
+                
+                if callable(value):
+                    content = content.replace(f"[[!{match}!]]", str(value()), 1)
+                elif value:
+                    content = content.replace(f"[[!{match}!]]", value, 1)
+            except:
+                print(f"Nothing assigned to {stripped}")
 
         return content

@@ -1,38 +1,46 @@
-from Linko import Linko
-import time
-
-Link = Linko()
-Link.add_method("Test", "Variables work Yes")
-
-e=0
-def call_test():
-    global e
-    e+=1
-    return e
-
-Link.add_method("call_test", call_test)
-
-#def call_test(argument, test):
-#    return argument + " | " + test
-#
-#Link.add_method(call_test)
-
-HTML = """
-<!DOCTYPE html>
-
-<html>
-    [[! Test !]]
-<head>
-
-</head>
-
-<body>
-    [[! call_test !]]
-    [[! call_test !]]
-    [[! call_test !]]
-</body>
-
-</html>
 """
 
-print(Link.render(HTML))
+    Made by Monnapse#7578
+
+"""
+
+from Linko import Linko
+from flask import Flask
+
+app = Flask(__name__)
+globalLink = Linko()
+
+views=0
+def page_views():
+    global views
+    views+=1
+    return views
+
+globalLink.add_method("GetPageViews", page_views)
+
+@app.route("/")
+def home():
+    localLink = Linko()
+    print(localLink.Methods)
+    localLink.add_method("PageName", "Home Page")
+
+    HomePage = """
+    <!DOCTYPE html>
+
+    <html>
+        <title>[[! PageName !]]</title>
+    <head>
+
+    </head>
+
+    <body>
+        Page Views [[! GetPageViews !]]
+    </body>
+
+    </html>
+    """
+
+    return localLink.render(HomePage)
+
+if __name__ == '__main__':
+    app.run(debug=True)
