@@ -6,7 +6,7 @@ Link.add_method("Test", "Variables work Yes")
 def call_test(argument, test):
     return argument + " | " + test
 
-Link.add_method(, "Variables work Yes")
+Link.add_method(call_test)
 
 HTML = """
 <!DOCTYPE html>
@@ -17,8 +17,8 @@ HTML = """
 
 </head>
 
-<body background="drive/media/png/backdrop.png">
-
+<body>
+    [[! call_test(Test, "Good") !]]
 </body>
 
 </html>

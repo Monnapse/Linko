@@ -1,6 +1,11 @@
 import re
+import types
 
-class Linko:
+style = r'\[\[!(.*?)!\]\]'
+#style = r'\[\[! (?:.*?|\[\[!.*?!\]\])*? !\]\]'
+function = r'^\w+\(.*\)$'
+    
+class Linko:     
     def __init__(self, Methods: set = {}):
        """
        Connect Python and HTML to pass varius Methods.
@@ -10,20 +15,28 @@ class Linko:
        [[! valueHere !]]
        """
        self.Methods = Methods
-
-    def add_method(self, Method: str, Value: any) -> None:
+        
+    def add_method(self, Method: str or types.FunctionType, Value: any or None = None) -> None:
         """
         adds method to the Methods set
         """
-        print(Method, Value)
-        self.Methods[Method] = Value
+        if callable(Method):
+            self.Methods[Method.__name__] = Method
+        else:
+            self.Methods[Method] = Value
 
     def render(self, content: str) -> str:
-        pattern = r'\[\[! (.*?) !\]\]'
-        matches = re.findall(pattern, content)
-
+        matches = re.findall(style, content)
+        
         for match in matches:
-            print(f"[[! {match} !]]", self.Methods[match])
-            content = content.replace(f"[[! {match} !]]", self.Methods[match], 1)
+            stripped = match.strip()
+
+            if re.match(function, match):
+                print(f"'{match}' resembles a function call.")
+            else:
+                print(f"'{match}' does not resemble a function call.")
+                value = self.Methods[stripped]
+                if value:
+                    content = content.replace(f"[[!{match}!]]", value, 1)
 
         return content
