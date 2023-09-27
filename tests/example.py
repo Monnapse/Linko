@@ -18,6 +18,12 @@ def page_views():
 
 Link.add_method("GetPageViews", page_views)
 
+def get(text, text2):
+    print(text, text2)
+    return text + " | " + text2
+
+Link.add_method(get)
+
 @app.route("/")
 def home():
     localLink = Link.create_layer()
@@ -34,6 +40,7 @@ def home():
 
     <body>
         Page Views [[! GetPageViews !]]
+        [[! get("123",456) !]]
     </body>
 
     </html>

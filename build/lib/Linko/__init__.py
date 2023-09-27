@@ -6,6 +6,7 @@ debug = False
 style = r'\[\[!(.*?)!\]\]'
 #style = r'\[\[! (?:.*?|\[\[!.*?!\]\])*? !\]\]'
 function = r'^\w+\(.*\)$'
+quotes = r"'(.*?)'|\"(.*?)\""
 
 globalMethods = {}
 
@@ -59,20 +60,34 @@ def render(layer, content: str, includeGlobal: bool = True) -> str:
     matches = re.findall(style, content)
     
     for match in matches:
-        stripped = match.strip()
+        stripped: str = match.strip()
 
-        #if re.match(function, match):
-            #function
-        #else:
-        try:
-            value = Methods[stripped]
-            if callable(value):
-                content = content.replace(f"[[!{match}!]]", str(value()), 1)
-            elif value:
-                content = content.replace(f"[[!{match}!]]", value, 1)
-        except:
-            if debug:
-                print(f"Nothing assigned to {stripped}")
+        if re.findall(function, stripped):
+           #function
+           #content = content.replace(f"[[!{match}!]]", str(value()), 1)
+           split = stripped.split("(", 1)
+           name = split[0]
+           arguments = split[1].split(")", 1)[0].split(",")
+           index = 0
+           for i in arguments:
+               strings = re.findall(quotes, i)
+               if len(strings) > 0:
+                arguments[index] = strings[0][1]
+               index+=1
+
+           event = Methods[name]
+
+           content = content.replace(f"[[!{match}!]]", str(event(*arguments)), 1)
+        else:
+            try:
+                value = Methods[stripped]
+                if callable(value):
+                    content = content.replace(f"[[!{match}!]]", str(value()), 1)
+                elif value:
+                    content = content.replace(f"[[!{match}!]]", value, 1)
+            except:
+                if debug:
+                    print(f"Nothing assigned to {stripped}")
 
     return content
     

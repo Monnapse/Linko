@@ -5,6 +5,9 @@ Function Methods Not Added Yet
 
 # UPDATES
 
+## 0.0.13
+* added functions
+
 ## 0.0.12
 * added global methods
 
